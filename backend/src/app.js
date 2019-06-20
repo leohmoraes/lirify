@@ -1,12 +1,3 @@
-/**
- * This is an example of a basic node.js script that performs
- * the Authorization Code oAuth2 flow to authenticate against
- * the Spotify Accounts.
- *
- * For more information, read
- * https://developer.spotify.com/web-api/authorization-guide/#authorization_code_flow
- */
-
 var express = require("express"); // Express web server framework
 var request = require("request"); // "Request" library
 var querystring = require("querystring");
@@ -15,17 +6,6 @@ var cookieParser = require("cookie-parser");
 var client_id = "c32e61b3e950486eb9cd5067a25d8b33"; // Your client id
 var client_secret = "164ba4f3411c4204b60a8b4e89b26201"; // Your secret
 var redirect_uri = "http://localhost:8888/callback"; // Or Your redirect uri
-
-var generateRandomString = function(length) {
-  var text = "";
-  var possible =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-  for (var i = 0; i < length; i++) {
-    text += possible.charAt(Math.floor(Math.random() * possible.length));
-  }
-  return text;
-};
 
 var stateKey = "spotify_auth_state";
 
@@ -96,14 +76,19 @@ app.get("/callback", function(req, res) {
           console.log(body);
         });
 
+        var cookieAccessToken = req.cookies.cookieName;
+        var cookieRefreshToken = req.cookies.cookieName;
+
+        if (!cookieAccessToken && !cookieRefreshToken) {
+          res.clearCookie(cookieAccessToken);
+          res.clearCookie(cookieRefreshToken);
+        }
+
+        res.cookie("cookieAccessToken", access_token);
+        res.cookie("cookieRefreshToken", refresh_token);
+
         // we can also pass the token to the browser to make requests from there
-        res.redirect(
-          "http://localhost:3000/#" +
-            querystring.stringify({
-              access_token: access_token,
-              refresh_token: refresh_token
-            })
-        );
+        res.redirect("http://localhost:3000/#");
       } else {
         res.redirect(
           "/#" +
@@ -142,6 +127,17 @@ app.get("/refresh_token", function(req, res) {
     }
   });
 });
+
+var generateRandomString = function(length) {
+  var text = "";
+  var possible =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  for (var i = 0; i < length; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return text;
+};
 
 console.log("Listening on 8888");
 app.listen(8888);

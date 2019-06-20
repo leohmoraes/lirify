@@ -2,24 +2,24 @@ import React, { Component } from "react";
 import axios from "axios";
 import SpotifyWebApi from "spotify-web-api-js";
 import api from "./services/api";
+import cookies from "js-cookie";
 const spotifyApi = new SpotifyWebApi();
 
 class App extends Component {
-  constructor() {
-    super();
+  state = {
+    loggedIn: "",
+    nowPlaying: { name: "", albumArt: "" },
+    lyrics: ""
+  };
 
-    const params = this.getHashParams();
-    const token = params.access_token;
+  componentDidMount = () => {
+    var access_token = cookies.get("cookieAccessToken");
+    var refresh_token = cookies.get("cookieRefreshToken");
 
-    if (token) {
-      spotifyApi.setAccessToken(token);
-    }
-    this.state = {
-      loggedIn: token ? true : false,
-      nowPlaying: { name: "", albumArt: "" },
-      lyrics: ""
-    };
-  }
+    this.setState({ loggedIn: access_token ? true : false });
+
+    spotifyApi.setAccessToken(access_token);
+  };
 
   getLyrics = async () => {
     try {
@@ -44,19 +44,6 @@ class App extends Component {
     } catch (e) {}
   };
 
-  getHashParams() {
-    var hashParams = {};
-    var e,
-      r = /([^&;=]+)=?([^&;]*)/g,
-      q = window.location.hash.substring(1);
-    e = r.exec(q);
-    while (e) {
-      hashParams[e[1]] = decodeURIComponent(e[2]);
-      e = r.exec(q);
-    }
-    return hashParams;
-  }
-
   getNowPlaying() {
     spotifyApi.getMyCurrentPlaybackState().then(response => {
       this.setState({
@@ -75,8 +62,6 @@ class App extends Component {
         {!this.state.loggedIn && (
           <div className="unlogged">
             <a href="http://localhost:8888/"> Login to Spotify </a>
-            <div>{this.state.nowPlaying.name}</div>
-            <div>{this.state.nowPlaying.name}</div>
           </div>
         )}
 
@@ -85,6 +70,9 @@ class App extends Component {
             <button onClick={() => this.getNowPlaying()}>
               Check Now Playing
             </button>
+            <img src={this.state.nowPlaying.albumArt} width="150px" />
+            <div>{this.state.nowPlaying.artist}</div>
+            <div>{this.state.nowPlaying.name}</div>
             <button onClick={() => this.getLyrics()}>Check Lyrics</button>
           </div>
         )}
