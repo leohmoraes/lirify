@@ -3,22 +3,28 @@ import axios from "axios";
 import SpotifyWebApi from "spotify-web-api-js";
 import api from "./services/api";
 import cookies from "js-cookie";
+import { Container, Card } from "./Style";
+
+import GlobalStyle from "./global";
 const spotifyApi = new SpotifyWebApi();
 
 class App extends Component {
   state = {
-    loggedIn: "",
+    loggedIn: false,
     nowPlaying: { name: "", albumArt: "" },
     lyrics: ""
   };
 
-  componentDidMount = () => {
-    var access_token = cookies.get("cookieAccessToken");
-    var refresh_token = cookies.get("cookieRefreshToken");
+  componentDidMount = async () => {
+    var access_token = await cookies.get("cookieAccessToken");
+    var refresh_token = await cookies.get("cookieRefreshToken");
 
     this.setState({ loggedIn: access_token ? true : false });
 
-    spotifyApi.setAccessToken(access_token);
+    if (this.state.loggedIn) {
+      spotifyApi.setAccessToken(access_token);
+      this.getNowPlaying();
+    }
   };
 
   getLyrics = async () => {
@@ -39,9 +45,10 @@ class App extends Component {
       await axios.get(URL).then(response => {
         var el = document.createElement("html");
         el.innerHTML = response.data;
-        document.getElementById("lyrics").innerText = el.querySelector(
+        document.getElementById("lyrics").innerHTML += el.querySelector(
           ".lyrics"
-        ).textContent;
+        ).innerHTML;
+        document.getElementById("lyrics").appendChild("teste");
       });
     } catch (e) {}
   };
@@ -62,6 +69,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+        <GlobalStyle />
         {!this.state.loggedIn && (
           <div className="unlogged">
             <a href="http://localhost:8888/login"> Login to Spotify </a>
@@ -69,17 +77,28 @@ class App extends Component {
         )}
 
         {this.state.loggedIn && (
-          <div className="logged">
-            <button onClick={() => this.getNowPlaying()}>
-              Check Now Playing
-            </button>
-            <img src={this.state.nowPlaying.albumArt} width="150px" />
-            <div>{this.state.nowPlaying.artist}</div>
-            <div>{this.state.nowPlaying.name}</div>
+          <div>
+            <Card>
+              <div className="music">
+                <img
+                  src={this.state.nowPlaying.albumArt}
+                  alt={this.state.nowPlaying.artist}
+                  width="150px"
+                />
+                <div className="info">
+                  <span>{this.state.nowPlaying.artist}</span>
+                  <span id="title">{this.state.nowPlaying.name}</span>
+                  <button onClick={() => this.getNowPlaying()}>REFRESH</button>
+                </div>
+              </div>
+            </Card>
+            <Container>
+              <div id="lyrics">
+                <h2>{this.state.nowPlaying.name}</h2>
+              </div>
+            </Container>
           </div>
         )}
-
-        <div id="lyrics" />
       </div>
     );
   }
