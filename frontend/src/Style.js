@@ -79,7 +79,6 @@ export const Card = styled.form`
       white-space: nowrap;
       margin: 10px 10px 0 0px;
       float: left;
-      text
     }
   }
 `;

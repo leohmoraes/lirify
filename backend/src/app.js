@@ -1,15 +1,16 @@
-var express = require("express"); // Express web server framework
-var request = require("request"); // "Request" library
+var express = require("express");
+var request = require("request");
 var querystring = require("querystring");
 var cookieParser = require("cookie-parser");
 
-var client_id = "c32e61b3e950486eb9cd5067a25d8b33"; // Your client id
-var client_secret = "164ba4f3411c4204b60a8b4e89b26201"; // Your secret
-var redirect_uri = "http://localhost:8888/callback"; // Or Your redirect uri
+var app = express();
+const server = require("http").Server(app);
+
+var client_id = process.env.CLIENT_ID;
+var client_secret = process.env.CLIENT_SECRET;
+var redirect_uri = process.env.REDIRECT_URI;
 
 var stateKey = "spotify_auth_state";
-
-var app = express();
 
 app.use(express.static(__dirname + "/public")).use(cookieParser());
 
@@ -140,4 +141,5 @@ var generateRandomString = function(length) {
 };
 
 console.log("Listening on 8888");
-app.listen(8888);
+//app.listen(8888);
+server.listen(8888);

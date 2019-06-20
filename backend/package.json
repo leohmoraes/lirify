@@ -11,5 +11,8 @@
   },
   "scripts": {
     "start": "node src/app.js"
+  },
+  "devDependencies": {
+    "dotenv": "^8.0.0"
   }
 }

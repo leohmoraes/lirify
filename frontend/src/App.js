@@ -45,10 +45,9 @@ class App extends Component {
       await axios.get(URL).then(response => {
         var el = document.createElement("html");
         el.innerHTML = response.data;
-        document.getElementById("lyrics").innerHTML += el.querySelector(
-          ".lyrics"
-        ).innerHTML;
-        document.getElementById("lyrics").appendChild("teste");
+        document.getElementById("content").innerText = el
+          .querySelector(".lyrics")
+          .innerText.substring(5);
       });
     } catch (e) {}
   };
@@ -85,16 +84,21 @@ class App extends Component {
                   alt={this.state.nowPlaying.artist}
                   width="150px"
                 />
-                <div className="info">
-                  <span>{this.state.nowPlaying.artist}</span>
-                  <span id="title">{this.state.nowPlaying.name}</span>
-                  <button onClick={() => this.getNowPlaying()}>REFRESH</button>
-                </div>
+                {this.state.nowPlaying.artist && (
+                  <div className="info">
+                    <span>{this.state.nowPlaying.artist}</span>
+                    <span id="title">{this.state.nowPlaying.name}</span>
+                    <button onClick={() => this.getNowPlaying()}>
+                      REFRESH
+                    </button>
+                  </div>
+                )}
               </div>
             </Card>
             <Container>
               <div id="lyrics">
                 <h2>{this.state.nowPlaying.name}</h2>
+                <div id="content" />
               </div>
             </Container>
           </div>
