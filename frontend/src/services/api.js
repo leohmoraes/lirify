@@ -4,7 +4,7 @@ const at = "D0B3svRsNMCQcIVHO7VxA824Q5eHaziJQ3U7ab7llys2QwJnZ2lAUL_CbybuWnUX";
 const base_url = "";
 
 const api = axios.create({
-  baseURL: "http://api.genius.com",
+  baseURL: "https://cors-anywhere.herokuapp.com/http://api.genius.com",
   headers: {
     "Access-Control-Allow-Origin": "*",
     "Content-Type": "application/json",

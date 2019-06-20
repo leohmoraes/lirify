@@ -32,7 +32,9 @@ class App extends Component {
         );
       }
 
-      var URL = "https://genius.com" + music.response.hits[0].result.api_path;
+      var URL =
+        "https://cors-anywhere.herokuapp.com/https://genius.com" +
+        music.response.hits[0].result.api_path;
 
       await axios.get(URL).then(response => {
         var el = document.createElement("html");
@@ -44,8 +46,8 @@ class App extends Component {
     } catch (e) {}
   };
 
-  getNowPlaying() {
-    spotifyApi.getMyCurrentPlaybackState().then(response => {
+  async getNowPlaying() {
+    await spotifyApi.getMyCurrentPlaybackState().then(response => {
       this.setState({
         nowPlaying: {
           artist: response.item.artists[0].name,
@@ -54,6 +56,7 @@ class App extends Component {
         }
       });
     });
+    await this.getLyrics();
   }
 
   render() {
@@ -61,7 +64,7 @@ class App extends Component {
       <div className="App">
         {!this.state.loggedIn && (
           <div className="unlogged">
-            <a href="http://localhost:8888/"> Login to Spotify </a>
+            <a href="http://localhost:8888/login"> Login to Spotify </a>
           </div>
         )}
 
@@ -73,7 +76,6 @@ class App extends Component {
             <img src={this.state.nowPlaying.albumArt} width="150px" />
             <div>{this.state.nowPlaying.artist}</div>
             <div>{this.state.nowPlaying.name}</div>
-            <button onClick={() => this.getLyrics()}>Check Lyrics</button>
           </div>
         )}
 
