@@ -4,6 +4,7 @@ var querystring = require("querystring");
 var cookieParser = require("cookie-parser");
 
 var app = express();
+
 const server = require("http").Server(app);
 
 var client_id = process.env.CLIENT_ID;
@@ -12,9 +13,9 @@ var redirect_uri = process.env.REDIRECT_URI;
 
 var stateKey = "spotify_auth_state";
 
-app.use(express.static(__dirname + "/public")).use(cookieParser());
+//app.use(express.static(__dirname + "/public")).use(cookieParser());
 
-app.get("/login", function(req, res) {
+app.get("/", function(req, res) {
   var state = generateRandomString(16);
   res.cookie(stateKey, state);
 
@@ -140,6 +141,6 @@ var generateRandomString = function(length) {
   return text;
 };
 
-console.log("Listening on 8888");
-//app.listen(8888);
 server.listen(8888);
+console.log("Listening on 8888");
+
