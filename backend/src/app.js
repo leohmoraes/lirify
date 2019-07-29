@@ -3,6 +3,8 @@ var request = require("request");
 var querystring = require("querystring");
 var cookieParser = require("cookie-parser");
 
+require("dotenv").config();
+
 var app = express();
 
 const server = require("http").Server(app);
@@ -13,10 +15,11 @@ var redirect_uri = process.env.REDIRECT_URI;
 
 var stateKey = "spotify_auth_state";
 
-//app.use(express.static(__dirname + "/public")).use(cookieParser());
+app.use(express.static(__dirname + "/public")).use(cookieParser());
 
-app.get("/", function(req, res) {
+app.get("/login", function(req, res) {
   var state = generateRandomString(16);
+
   res.cookie(stateKey, state);
 
   // your application requests authorization
@@ -73,9 +76,8 @@ app.get("/callback", function(req, res) {
           json: true
         };
 
-        // use the access token to access the Spotify Web API
         request.get(options, function(error, response, body) {
-          console.log(body);
+          // console.log(body);
         });
 
         var cookieAccessToken = req.cookies.cookieName;
@@ -143,4 +145,3 @@ var generateRandomString = function(length) {
 
 server.listen(8888);
 console.log("Listening on 8888");
-

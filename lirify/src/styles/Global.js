@@ -1,5 +1,7 @@
 import { createGlobalStyle } from "styled-components";
 
+import "font-awesome/css/font-awesome.css";
+
 const GlobalStyle = createGlobalStyle`
     * {
         margin: 0;
@@ -21,7 +23,6 @@ const GlobalStyle = createGlobalStyle`
         -webkit-font-smothing: anti-aliased;
 
     }
-
     .unlogged{
         display: flex;
         flex-direction: column;

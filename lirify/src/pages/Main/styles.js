@@ -14,6 +14,16 @@ export const Container = styled.div`
     padding-bottom: 20px;
     border-radius: 5px;
     margin-bottom: 50px;
+
+    .fa {
+      padding-top: 20px;
+      padding-bottom: 15px;
+      font-size: 60px !important;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 20px;
+    }
   }
 
   #lyrics h2 {
@@ -54,6 +64,9 @@ export const Card = styled.form`
     flex-direction: column;
     align-items: flex-start;
 
+    p {
+      align-items: center;
+    }
     span {
       margin: 5px;
       font-size: 24px;
